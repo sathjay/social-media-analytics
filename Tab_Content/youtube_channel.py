@@ -184,13 +184,13 @@ youtube_channel_layout = html.Div([
 
         html.Br(),
         html.Div([
-            dcc.Graph(id='viewership_plot', figure=blank_fig(),
-                      style={'width': '90%', 'height': '60vh', 'margin-left': '10px', 'margin-right': '3%'}),
+            dcc.Graph(id='viewership_plot', figure=blank_fig(), config={'displayModeBar': False},
+                      style={'width': '92%', 'height': '64vh', 'margin-left': '10px', 'margin-right': '2%'}),
         ], className='graph_container'),
         html.Br(),
         html.Div([
-            dcc.Graph(id='Ratio_plot', figure=blank_fig(),
-                      style={'width': '90%', 'height': '60vh', 'margin-left': '10px', 'margin-right': '3%'}),
+            dcc.Graph(id='Ratio_plot', figure=blank_fig(), config={'displayModeBar': False},
+                      style={'width': '92%', 'height': '60vh', 'margin-left': '10px', 'margin-right': '2%'}),
         ], className='graph_container'),
 
 
@@ -431,9 +431,9 @@ def app_layout(n_click, youtube_url):
             legend=dict(
                       bgcolor='white',
                       bordercolor='black',
-                      orientation='h',
-                      x=.5,
-                y=1.11,
+                      orientation='v',
+                      x=.95,
+                y=1.16,
                       traceorder='normal',
                       borderwidth=1)
         )
@@ -447,7 +447,7 @@ def app_layout(n_click, youtube_url):
             [a for b in all_comments_DF['comments_no_stopwords'].tolist() for a in b])
         all_words_str = ' '.join(all_words)
 
-        my_wordcloud = WordCloud(width=2400, height=1500, random_state=1, background_color='black',
+        my_wordcloud = WordCloud(width=2420, height=1500, random_state=1, background_color='black',
                                  colormap='viridis', collocations=False).generate(all_words_str)
 
         # visualize wordcloud inside plotly figure
@@ -460,7 +460,7 @@ def app_layout(n_click, youtube_url):
             html.P(["WordCloud for the recent few comments recieved by channel '{}':".format(
                 Channel_Name)], className='response_title'),
             dcc.Graph(figure=fig2, config={"displayModeBar": False}, style={
-                'width': '90%', 'height': '74vh'})
+                'width': '92%', 'height': '74vh'})
 
         ], className='graph_container')
 
