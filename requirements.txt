@@ -79,3 +79,4 @@ websocket-client==1.6.1
 Werkzeug==2.2.3
 wordcloud==1.9.2
 yarl==1.9.2
+youtube-transcript-api==0.6.1
