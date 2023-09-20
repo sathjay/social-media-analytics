@@ -39,7 +39,7 @@ youtube_LO = html.Div([
     html.H4(["Click on a tab: "], className=''),
     html.Li("Youtube Channel Metrics: This tab will show you the metrics like views, likes or comment count of videos uploaded from a youtube channel."),
     html.Li("YouTube ChatGPT Comments Analysis: This tab will show you the comments from a YouTube video. Using ChatGPT, users can determine the sentiment of the comments and can also generate 'Thank you' response for the video comment."),
-    html.Li("YouTube ChatGPT Transcript Analysis: By leveraging the 'youtube_transcript_api' Python library, users can obtain the transcript of a YouTube video if available. Following this, ChatGPT is utilized to analyze the transcript to: determine PG or adult rating based on the content, identifying the key topics discussed, and generate a summary of the transcript. Additionally, using TextBlob library the subjectivity and polarity of the conversation in the transcript of video is calculated."),
+    html.Li("YouTube ChatGPT Transcript Analysis: By leveraging the 'youtube_transcript_api' Python library, users can obtain the transcript of a YouTube video if available. Following this, ChatGPT is utilized to analyze the transcript to: determine PG or adult rating based on the content, identifying the key topics discussed, and generate a summary and sentiment of the transcript. "),
 
     html.Div([
         dcc.Tabs(id='youtube_tabs', value='',

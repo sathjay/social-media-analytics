@@ -263,6 +263,7 @@ def chatgpt_layout2(active_cell):
 
     chat_gpt_response = response['choices'][0]['message']['content'].split(
         '\n')
+
     chat_gpt_response = list(filter(None, chat_gpt_response))
     sentiment = chat_gpt_response[0]
     ty_message = chat_gpt_response[1]

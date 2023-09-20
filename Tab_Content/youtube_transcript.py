@@ -35,7 +35,8 @@ youtube_transcript_lo = html.Div([
     html.Div([
         html.Li("Extract the video title, total views, likes, comments that YouTube video has generated so far and the video transcript."),
         html.Li("Using ChatGPT, the app will provide PG/Adult rating, identify the key topics discussed in the video, and generate a summary of the video transcript."),
-        html.Li("The app will also calculate the subjectivity and polarity of the conversation in the transcript of video by using TextBlob library."),
+        html.Li(
+            "The app will also provide the sentiment of the conversation in the video transcript.")
 
     ], className='app_task_list'),
 
@@ -56,7 +57,7 @@ youtube_transcript_lo = html.Div([
     html.Div(id='video_tran_search_message'),
 
     html.Br(),
-    html.Div(id='output-div'),
+    html.Div(id='response-div'),
     html.Br(),
 
     html.Div(id='textarea-div'),
@@ -66,7 +67,7 @@ youtube_transcript_lo = html.Div([
 
 @app.callback(
     [Output('video_tran_search_message', 'children'),
-     Output('output-div', 'children'),
+     Output('response-div', 'children'),
      Output('textarea-div', 'children'),
      Output("youtube_url_transcript", component_property='value')],
     [Input('submit-youtube_url', 'n_clicks')],
@@ -126,22 +127,52 @@ def chatgpt_yt_content_analysis(n_clicks, video_url):
 
     print(full_transcrpit)
 
+    if len(full_transcrpit) > 5000:
+        transcript_length = 5000
+    else:
+        transcript_length = len(full_transcrpit)
+
     response = openai.ChatCompletion.create(
         model='gpt-3.5-turbo',
         messages=[
             {'role': 'system', 'content': 'You are a Youtube content moderator. Review the transcript of the video. You should list out the following:\
                                     1) The first item should be the rating on whether the content is appropriate for all audience or adults only or for kids. \
                                     2) The second item should be the keywords (Max 10 numbers based on importance) that are discussed in the video. \
-                                    3) The third item should be the summary of the video transcpit no more than 200 words. '},
+                                    3) The third item should be the summary of the video transcpit no more than 200 words.\
+                                    4) The fourth item should be the sentiment of the conversation in the video transcript.\
+            The output should have 4 points and listed as 1),2),3) and 4) '
+             },
 
-            {'role': 'user', 'content': full_transcrpit[0:5000]}
-
+            {'role': 'user', 'content': full_transcrpit[0:transcript_length]}
 
         ])
 
-    print(response['choices'][0])
+    chat_gpt_transcript_analysis = response['choices'][0]['message']['content'].split(
+        '\n')
+    print(chat_gpt_transcript_analysis)
+    chat_gpt_transcript_analysis_updated = []
 
-    response_text = response['choices'][0]['message']['content']
+    for item in chat_gpt_transcript_analysis:
+        if len(item) > 1:
+            chat_gpt_transcript_analysis_updated.append(item)
+        else:
+            pass
+
+    print(chat_gpt_transcript_analysis_updated)
+
+    rating = chat_gpt_transcript_analysis_updated[0]
+    keywords = chat_gpt_transcript_analysis_updated[1]
+    summary = chat_gpt_transcript_analysis_updated[2]
+    sentiment = chat_gpt_transcript_analysis_updated[3]
+
+    response_div = (html.P(["ChatGPT's Transcript Analysis  "], className='response_title'),
+                    html.P(rating, id='rating'),
+                    html.P(keywords, id='keywords'),
+                    html.P(summary, id='summary'),
+                    html.P(sentiment, id='sentiment'),
+                    html.P(
+                        'Note: Only first 5000 characters of the transcript is used for analysis. This is beacuse of the API token limit from  OpenAI.', className='note')
+                    )
 
     text_area_content = html.Div([
         html.Label("The Full Transcript:", className='label'),
@@ -149,8 +180,8 @@ def chatgpt_yt_content_analysis(n_clicks, video_url):
         dcc.Textarea(
             value=full_transcrpit,
             id='textarea-transcript',
-            style={'width': '50%', 'height': 200},
+            style={'width': '60%', 'height': 200, 'marginTop': '10px'},
         ),
     ])
 
-    return message_div, response_text, text_area_content, ''
+    return message_div, response_div, text_area_content, ''

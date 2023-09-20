@@ -163,6 +163,11 @@ h1 {
   font-weight: 550;
 }
 
+.note {
+  font-size: 14px;
+  font-style: italic;
+}
+
 .small_table {
   margin-top: 22px;
   margin-left: 10px;
