@@ -137,7 +137,7 @@ def chatgpt_yt_content_analysis(n_clicks, video_url):
         messages=[
             {'role': 'system', 'content': 'You are a Youtube content moderator. Review the transcript of the video. You should list out the following:\
                                     1) The first item should be the rating on whether the content is appropriate for all audience or adults only or for kids. \
-                                    2) The second item should be the keywords (Max 10 numbers based on importance) that are discussed in the video. \
+                                    2) The second item should be top 10 keywords that are discussed in the video. \
                                     3) The third item should be the summary of the video transcpit no more than 200 words.\
                                     4) The fourth item should be the sentiment of the conversation in the video transcript.\
             The output should have 4 points and listed as 1),2),3) and 4) '
