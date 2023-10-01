@@ -54,7 +54,7 @@ g_interest_over_time_lo = html.Div([
 
         dcc.Input(id="search_item_iot",
                   type="text",
-                  placeholder="Example: Beer, Whisky, Wine",
+                  value='Bitcoin',
                   required=True,
                   persistence=False,
                   style={'marginRight': '10px'},
@@ -68,7 +68,8 @@ g_interest_over_time_lo = html.Div([
                      multi=False,  # allow multiple dropdown values to be selected
                      searchable=True,  # allow user-searching of dropdown values
                      # gray, default text shown when no option is selected
-                     placeholder='Select Country',
+                     value='US',
+                     # placeholder='Select Country',
                      clearable=True,  # allow user to removes the selected value
                      className='dropdown_box',  # activate separate CSS document in assets folder
                      ),
@@ -81,7 +82,8 @@ g_interest_over_time_lo = html.Div([
                      multi=False,  # allow multiple dropdown values to be selected
                      searchable=True,  # allow user-searching of dropdown values
                      # gray, default text shown when no option is selected
-                     placeholder='Select Timeframe',
+                     value='today 5-y',
+                     # placeholder='Select Timeframe',
                      clearable=True,  # allow user to removes the selected value
                      className='dropdown_box',  # activate separate CSS document in assets folder
                      ),
@@ -93,8 +95,7 @@ g_interest_over_time_lo = html.Div([
 
 
     html.Div([
-        dcc.Graph(id='interest_over_time_plot', figure=blank_fig(),
-                  style={'width': '90%', 'height': '60vh', 'margin-left': '10px', 'margin-right': '3%'}),
+        dcc.Graph(id='interest_over_time_plot', figure=blank_fig(),),
     ], className='graph_container'),
 
 

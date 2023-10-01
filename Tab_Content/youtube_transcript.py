@@ -44,7 +44,8 @@ youtube_transcript_lo = html.Div([
 
     dcc.Input(id="youtube_url_transcript",
               type="url",
-              placeholder="Example: https://www.youtube.com/watch?v=FkKPsLxgpuY&t=640s ",
+              value='https://www.youtube.com/watch?v=ILgSesWMUEI',
+              # placeholder="Example: https://www.youtube.com/watch?v=FkKPsLxgpuY&t=640s ",
               required=True,
               style={'marginRight': '10px'},
               persistence=False,
@@ -179,8 +180,7 @@ def chatgpt_yt_content_analysis(n_clicks, video_url):
         html.Br(),
         dcc.Textarea(
             value=full_transcrpit,
-            id='textarea-transcript',
-            style={'width': '60%', 'height': 200, 'marginTop': '10px'},
+            id='textarea-transcript'
         ),
     ])
 

@@ -36,7 +36,8 @@ g_trend_today_lo = html.Div([
                      disabled=False,  # disable dropdown value selection
                      multi=False,  # allow multiple dropdown values to be selected
                      searchable=True,  # allow user-searching of dropdown values
-                     placeholder='Select Country',  # gray, default text shown when no option is selected
+                     value='IE',
+                     # placeholder='Select Country',  # gray, default text shown when no option is selected
                      clearable=True,  # allow user to removes the selected value
                      className='dropdown_box',  # activate separate CSS document in assets folder
                      ),

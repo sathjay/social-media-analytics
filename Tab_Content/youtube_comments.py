@@ -47,7 +47,8 @@ youtube_comments_lo = html.Div([
 
     dcc.Input(id="youtube_url_comment",
               type="url",
-              placeholder="Example: https://www.youtube.com/watch?v=FkKPsLxgpuY&t=640s ",
+              value='https://www.youtube.com/watch?v=ILgSesWMUEI',
+              # placeholder="Example: https://www.youtube.com/watch?v=FkKPsLxgpuY&t=640s ",
               required=True,
               persistence=False,
               style={'marginRight': '10px'},

@@ -168,7 +168,8 @@ youtube_channel_layout = html.Div([
     html.Label("Enter YouTube Channel URL:", className='label'),
     dcc.Input(id="youtube_url_channel",
               type="url",
-              placeholder="Example: https://www.youtube.com/watch?v=FkKPsLxgpuY&t=640s ",
+              value='https://www.youtube.com/watch?v=ILgSesWMUEI',
+              # placeholder="Example: https://www.youtube.com/watch?v=FkKPsLxgpuY&t=640s ",
               required=True,
               style={'marginRight': '10px'},
               persistence=False,
@@ -184,13 +185,13 @@ youtube_channel_layout = html.Div([
 
         html.Br(),
         html.Div([
-            dcc.Graph(id='viewership_plot', figure=blank_fig(), config={'displayModeBar': False},
-                      style={'width': '92%', 'height': '64vh', 'margin-left': '10px', 'margin-right': '2%'}),
+            dcc.Graph(id='viewership_plot', figure=blank_fig(),
+                      config={'displayModeBar': False}),
         ], className='graph_container'),
         html.Br(),
         html.Div([
-            dcc.Graph(id='Ratio_plot', figure=blank_fig(), config={'displayModeBar': False},
-                      style={'width': '92%', 'height': '60vh', 'margin-left': '10px', 'margin-right': '2%'}),
+            dcc.Graph(id='Ratio_plot', figure=blank_fig(),
+                      config={'displayModeBar': False}),
         ], className='graph_container'),
 
 
