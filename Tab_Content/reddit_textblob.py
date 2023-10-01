@@ -79,7 +79,8 @@ reddit_text_blob_lo = html.Div([
                  disabled=False,  # disable dropdown value selection
                  multi=False,  # allow multiple dropdown values to be selected
                  searchable=True,  # allow user-searching of dropdown values
-                 placeholder='Select SubReddit like ChatGPT or Politics',
+                 value='Politics',  # default value
+                 # placeholder='Select SubReddit like ChatGPT or Politics',
                  clearable=True,  # allow user to removes the selected value
                  className='dropdown_box',  # activate separate CSS document in assets folder
                  ),

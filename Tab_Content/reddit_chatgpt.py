@@ -68,7 +68,8 @@ reddit_chatgpt_lo = html.Div([
                  multi=False,  # allow multiple dropdown values to be selected
                  searchable=True,  # allow user-searching of dropdown values
                  # gray, default text shown when no option is selected
-                 placeholder='Please select...',
+                 value='stocks',
+                 # placeholder='Please select...',
                  clearable=True,  # allow user to removes the selected value
                  className='dropdown_box',  # activate separate CSS document in assets folder
                  ),
