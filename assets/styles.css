@@ -226,7 +226,7 @@ footer {
   margin-right: 2%;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 880px) {
   h1 {
     position: relative;
     -webkit-position: relative;
