@@ -123,6 +123,11 @@ reddit_text_blob_lo = html.Div([
 )
 def reditt_analysis(n_clicks, value):
 
+    '''
+    Top 100 threads from the selected reddit sub handle is extracted. 
+    Polarity and subjectivty of Title of each subreddit is calculated along with aggregate of all. 
+    '''
+
     search_term = value
 
     thread = reddit.subreddit(search_term).hot(limit=100)
@@ -239,6 +244,8 @@ def reditt_analysis(n_clicks, value):
 
     )
 
+    # WordCloud of all the headings in this subreddit.
+    
     title_with_no_stopword_list = list(
         [a for b in thread_heading['title_no_stopwords'].tolist() for a in b])
 
