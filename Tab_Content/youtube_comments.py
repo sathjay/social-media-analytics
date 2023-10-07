@@ -15,21 +15,17 @@ from dash.exceptions import PreventUpdate
 from app import app
 from Tab_Content.zEnv_variables import stopwords, Youtube_API_Key, Open_AI_API_Key
 
-
-from numerize import numerize # Added to make numbers readable.
+from numerize import numerize  # Added to make numbers readable.
 
 api_key = Youtube_API_Key
 youtube = build('youtube', 'v3', developerKey=api_key)
-search_result_DF = pd.DataFrame()   
-video_title = ''
-
-
 openai.api_key = Open_AI_API_Key
 
+
 def comment_clense(comment):
-    '''Comments can have multiple spaces or tabs. This will cleanse it provide a single splace text.'''
     comment = ' '.join(comment.split())
     return comment
+
 
 youtube_comments_lo = html.Div([
 
@@ -67,11 +63,10 @@ youtube_comments_lo = html.Div([
             'fontWeight': 'bold',
             'textAlign': 'center',
             'color': 'white',
-
         },
+        persistence=False,
         style_cell={
             'fontSize': '14px'},
-
         style_cell_conditional=[
             {
                 'if': {'column_id': 'Comment No:'},
@@ -101,12 +96,12 @@ youtube_comments_lo = html.Div([
             }
         ]
 
-
     ),
     html.Div(id='comment_section'),
     html.Br(),
     html.Div(id="ChatGPT_response"),
-
+    dcc.Store(id='store-comments-df'),  # Added store for DataFrame
+    dcc.Store(id='store-video-title'),  # Added store for video title
 
 ])
 
@@ -119,20 +114,14 @@ youtube_comments_lo = html.Div([
      Output("video_search_result", "active_cell"),
      Output("youtube_url_comment", component_property='value'),
      Output("comment_section", 'children', allow_duplicate=True),
-     Output("ChatGPT_response", 'children', allow_duplicate=True)
-     ],
+     Output("ChatGPT_response", 'children', allow_duplicate=True),
+     Output('store-comments-df', 'data'),  # Added store data output
+     Output('store-video-title', 'data'),]  # Added store data output],
     [Input('submit-youtube_url', 'n_clicks')],
     [State('youtube_url_comment', 'value')],
     prevent_initial_call=True
 )
 def chatgpt_layout1(n_click, search_term):
-    '''Comments for a particular Youtube video is extracted and displayed in table form.
-    The columns that will be displayed are comment number, comment author, comment(upto 140 char for display, 
-    comment like count. 20 comments are fetched and 10 are displayed. Page navigation for table is configured. 
-
-    This table is active. If user selects on a row, then comments in that row will be analyzed further by ChatGPT.
-    '''
-    
     link = search_term
     print(link)
     video_search_result_data = []
@@ -141,7 +130,6 @@ def chatgpt_layout1(n_click, search_term):
     pattern = 'v='
     message = ''
     match = re.search(pattern, link)
-    # Validating whether the link provided is valid or not.
     if match == None:
         message = "Please check the YouTube Video url. It should be like 'https://www.youtube.com/watch?v=RywP7cCYUWE' \
          or like 'https://www.youtube.com/watch?v=FkKPsLxgpuY&t=648s' this. "
@@ -149,7 +137,6 @@ def chatgpt_layout1(n_click, search_term):
         message_div = html.Div([
             html.Div([], className='content_separator'),
             html.H5([message], className='content_message')
-
         ])
 
     else:
@@ -163,7 +150,6 @@ def chatgpt_layout1(n_click, search_term):
                 part="snippet,statistics",
                 id=video_id)
             v_response = v_request.execute()
-            global video_title
             video_title = v_response['items'][0]['snippet']['title']
 
             video_view_count = int(
@@ -172,6 +158,7 @@ def chatgpt_layout1(n_click, search_term):
                 v_response['items'][0]['statistics']['likeCount'])
             video_comment_count = int(
                 v_response['items'][0]['statistics']['commentCount'])
+
             print(video_title, '\n', video_view_count, '\n',
                   video_like_count, '\n', video_comment_count)
 
@@ -182,16 +169,13 @@ def chatgpt_layout1(n_click, search_term):
                 html.H6([message], className='content_message')
 
             ])
-            
             c_request = youtube.commentThreads().list(
                 part="id,snippet,replies",
                 maxResults=20,
                 order="relevance",
                 videoId=video_id
             )
-
             c_response = c_request.execute()
-
             all_comments_info = []
             response_item = c_response['items']
             response_length = len(c_response['items'])
@@ -205,7 +189,6 @@ def chatgpt_layout1(n_click, search_term):
                 comments_row['Full Comment'] = response_item[i]['snippet']['topLevelComment']['snippet']['textOriginal']
                 all_comments_info.append(comments_row)
 
-            global all_comments_DF
             all_comments_DF = pd.DataFrame(all_comments_info)
             all_comments_DF['Full Comment'] = all_comments_DF['Full Comment'].apply(
                 comment_clense)
@@ -222,28 +205,40 @@ def chatgpt_layout1(n_click, search_term):
             video_search_result_data = comment_Display_DF.to_dict(
                 orient='records')
 
+            store_comments_df_data = all_comments_DF.to_json(
+                date_format='iso', orient='split')
+            store_video_title_data = video_title
+
         except:
             message = "Sorry. Either the comments are disabled for the video. Or issue your Youtube API"
 
         print(message)
 
-    return message_div, video_search_result_data, video_search_result_column, [], None, '', None, None
+    return message_div, video_search_result_data, video_search_result_column, [], None, '', None, None, store_comments_df_data, store_video_title_data
 
 
 @app.callback([Output('comment_section', "children"),
                Output('ChatGPT_response', "children"),],
-              [Input('video_search_result', 'active_cell')],
+              [Input('video_search_result', 'active_cell'),
+               Input('video_search_result', 'data'),
+               State('store-comments-df', 'data'),  # Retrieve data from store
+               State('store-video-title', 'data')],
               prevent_initial_call=True)
-def chatgpt_layout2(active_cell):
+def chatgpt_layout2(active_cell, data, store_comments_df_data, store_video_title_data):
+    ctx = dash.callback_context
 
-    '''for the active cell, the comment is extracted and with some prompt engineering it is sent to ChatGPT to 
-    analyze the sentiment and generate a thankyou response. The response for ChatGPT is displayed on the screen.'''
-    
-    if active_cell is None:
+    if not ctx.triggered:
+        raise PreventUpdate
+    else:
+        trigger_id = ctx.triggered[0]['prop_id'].split('.')[0]
+
+    if trigger_id == 'video_search_result' and active_cell is None:
         raise PreventUpdate
 
     print(active_cell)
     row = active_cell['row_id']
+    all_comments_DF = pd.read_json(store_comments_df_data, orient='split')
+    video_title = store_video_title_data
     comment = all_comments_DF['Full Comment'][row]
 
     print(video_title)
@@ -264,16 +259,12 @@ def chatgpt_layout2(active_cell):
                                      negative or neutral and generate a thank you response. IF the sentiment is \
                                      negative then keep the thank you response short'},
             {'role': 'user', 'content': prompt}
-
         ]
-
     )
 
     # Converting the ChatGPT response from string to List
-
     chat_gpt_response = response['choices'][0]['message']['content'].split(
         '\n')
-
     chat_gpt_response = list(filter(None, chat_gpt_response))
     sentiment = chat_gpt_response[0]
     ty_message = chat_gpt_response[1]
