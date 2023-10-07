@@ -29,7 +29,6 @@ stopwords = stopwords
 search_result_DF = pd.DataFrame()
 all_comments_DF = pd.DataFrame()
 
-
 def plot_View_Duration(fig, df, row, column=1):
     """Return a graph object figure containing the view and a histogram of Duration in the specified row."""
 
@@ -58,7 +57,6 @@ def plot_View_Duration(fig, df, row, column=1):
 
     return fig
 
-
 def plot_Like_Comment(fig, df, row, column=1):
     """Return a graph object figure containing the like count and comment in the specified row."""
 
@@ -85,7 +83,6 @@ def plot_Like_Comment(fig, df, row, column=1):
                      col=column, secondary_y=True,)
 
     return fig
-
 
 def plot_Ratio(df, Channel_Name):
     """Return a graph object figure containing the like to view, comment to view and comment to like % in the specified row."""
@@ -140,7 +137,6 @@ def plot_Ratio(df, Channel_Name):
 
     return fig
 
-
 def blank_fig():
     '''This is added for aesthetic purpose. When the page loads, the div which contains the graph object blends with the background'''
     
@@ -177,9 +173,7 @@ youtube_channel_layout = html.Div([
     html.Br(),
 
     dcc.Loading(children=[
-
         html.Div(id='message'),
-
         html.Br(),
         html.Div([
             dcc.Graph(id='viewership_plot', figure=blank_fig(),
@@ -190,18 +184,13 @@ youtube_channel_layout = html.Div([
             dcc.Graph(id='Ratio_plot', figure=blank_fig(),
                       config={'displayModeBar': False}),
         ], className='graph_container'),
-
-
         html.Div(id='wordcloud_figure_div', children=""),
-
         html.Div([
             html.P(id='summary_table_heading', className='response_title'),
             html.Div(id='youtube_channel_div'),
         ], className='large_table'),
-
         html.Br(),
     ], type="circle", fullscreen=True),
-
 ])
 
 @app.callback(
@@ -220,17 +209,10 @@ youtube_channel_layout = html.Div([
 def app_layout(n_click, youtube_url):
    '''
    This Call back function performs following task:
-   
-   From the provided Youtube url, the video ID is extracted. 
-   
-   
+   From the provided Youtube url, the video ID is extracted.
    '''
-
-    
-
     link = youtube_url
     print(link)
-
     pattern = 'v='
     message = ''
     match = re.search(pattern, link)
@@ -243,30 +225,27 @@ def app_layout(n_click, youtube_url):
             html.Div([], className='content_separator'),  # separator line
             html.H5([message], className='content_message')
         ])
-
         return message_div, blank_fig(), blank_fig(), '', [], [], ''
+    
     else:
         vid_start = match.end()
         vid_end = vid_start+11
         video_id = link[vid_start:vid_end]
         print(video_id)
 
-        # Getting Youtube Video Data (Channel ID)
-        
+        # Getting Youtube Video Data (Channel ID)    
         request = youtube.videos().list(
             part="snippet,statistics",
             id=video_id)
 
         response = request.execute()
-
         channel_ID = response['items'][0]['snippet']['channelId']
 
         # Getting Youtube Channel Data
         channel_data = []
-
         request = youtube.channels().list(
-            part="snippet,contentDetails,statistics",
-            id=channel_ID)
+                    part="snippet,contentDetails,statistics",
+                    id=channel_ID)
 
         response = request.execute()
 
@@ -301,7 +280,6 @@ def app_layout(n_click, youtube_url):
         ])
 
         # From playlistId get the video IDs recent 50 uploadeded videos of the channel
-
         request = youtube.playlistItems().list(
             part='contentDetails',
             playlistId=playlistId,
@@ -314,9 +292,7 @@ def app_layout(n_click, youtube_url):
             video_ids.append(response['items'][i]['contentDetails']['videoId'])
 
         # Getting Video Info like, number of views, etc.
-
         all_video_info = []
-
         request = youtube.videos().list(
             part="snippet,contentDetails,statistics",
             id=video_ids
@@ -530,10 +506,7 @@ def app_layout(n_click, youtube_url):
                                                              'width': '25px',
                                                              'textAlign': 'center'
                                                          },
-
                                                      ]
-
-
                                                      ),
 
         return message_div, fig, fig1, wordcloud_Fig,  summary_table_heading, youtube_channel_table, ''
