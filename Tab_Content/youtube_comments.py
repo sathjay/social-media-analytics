@@ -16,23 +16,20 @@ from app import app
 from Tab_Content.zEnv_variables import stopwords, Youtube_API_Key, Open_AI_API_Key
 
 
-# Added to make numbers readable.
-from numerize import numerize
+from numerize import numerize # Added to make numbers readable.
 
 api_key = Youtube_API_Key
 youtube = build('youtube', 'v3', developerKey=api_key)
-
-search_result_DF = pd.DataFrame()
+search_result_DF = pd.DataFrame()   
 video_title = ''
 
 
 openai.api_key = Open_AI_API_Key
 
-
 def comment_clense(comment):
+    '''Comments can have multiple spaces or tabs. This will cleanse it provide a single splace text.'''
     comment = ' '.join(comment.split())
     return comment
-
 
 youtube_comments_lo = html.Div([
 
@@ -129,6 +126,13 @@ youtube_comments_lo = html.Div([
     prevent_initial_call=True
 )
 def chatgpt_layout1(n_click, search_term):
+    '''Comments for a particular Youtube video is extracted and displayed in table form.
+    The columns that will be displayed are comment number, comment author, comment(upto 140 char for display, 
+    comment like count. 20 comments are fetched and 10 are displayed. Page navigation for table is configured. 
+
+    This table is active. If user selects on a row, then comments in that row will be analyzed further by ChatGPT.
+    '''
+    
     link = search_term
     print(link)
     video_search_result_data = []
@@ -137,6 +141,7 @@ def chatgpt_layout1(n_click, search_term):
     pattern = 'v='
     message = ''
     match = re.search(pattern, link)
+    # Validating whether the link provided is valid or not.
     if match == None:
         message = "Please check the YouTube Video url. It should be like 'https://www.youtube.com/watch?v=RywP7cCYUWE' \
          or like 'https://www.youtube.com/watch?v=FkKPsLxgpuY&t=648s' this. "
@@ -177,7 +182,7 @@ def chatgpt_layout1(n_click, search_term):
                 html.H6([message], className='content_message')
 
             ])
-
+            
             c_request = youtube.commentThreads().list(
                 part="id,snippet,replies",
                 maxResults=20,
@@ -230,6 +235,10 @@ def chatgpt_layout1(n_click, search_term):
               [Input('video_search_result', 'active_cell')],
               prevent_initial_call=True)
 def chatgpt_layout2(active_cell):
+
+    '''for the active cell, the comment is extracted and with some prompt engineering it is sent to ChatGPT to 
+    analyze the sentiment and generate a thankyou response. The response for ChatGPT is displayed on the screen.'''
+    
     if active_cell is None:
         raise PreventUpdate
 
