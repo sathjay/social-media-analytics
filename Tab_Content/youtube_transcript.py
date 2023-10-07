@@ -130,7 +130,7 @@ def chatgpt_yt_content_analysis(n_clicks, video_url):
     full_transcrpit = ' '.join(full_transcrpit_list)
 
     print(full_transcrpit)
-
+    # Because of OpenAI's token restriction only first 5000 words are sent for futher analysis to ChatGPT.
     if len(full_transcrpit) > 5000:
         transcript_length = 5000
     else:
@@ -147,7 +147,7 @@ def chatgpt_yt_content_analysis(n_clicks, video_url):
             The output should have 4 points and listed as 1),2),3) and 4) '
              },
 
-            {'role': 'user', 'content': full_transcrpit[0:transcript_length]}
+            {'role': 'user', 'content': full_transcrpit[0:transcript_length]} 
 
         ])
 
