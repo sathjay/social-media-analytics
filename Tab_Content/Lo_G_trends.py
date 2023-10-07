@@ -34,7 +34,7 @@ selected_tab_style = {'color': 'blue',
                       'border-left': '1px solid white',
                       'border-right': '1px solid white',
                       'border-bottom': '3px solid red'}
-
+# Main layout of the Dash app which contains tabs and descriptions
 google_trends_LO = html.Div([
 
     html.H4(["Click on a tab below: "], className='layout_title'),
@@ -88,6 +88,13 @@ google_trends_LO = html.Div([
 @app.callback(Output('g_trends_tab_content', 'children'),
               [Input('gtrends_tabs', 'value')])
 def update_youtube_tab_content(gtrends_tabs):
+      """
+    Callback to update the content of the tab when a tab is selected
+    Parameters:
+    - youtube_tabs (str): The 'value' of the selected tab.
+    Returns:
+    - The layout for the selected tab.
+    """
     if gtrends_tabs == 'tt':
         return g_trend_today_lo
     if gtrends_tabs == 'tgy':
