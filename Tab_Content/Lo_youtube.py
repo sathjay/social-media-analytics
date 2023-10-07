@@ -10,7 +10,7 @@ from Tab_Content.youtube_transcript import youtube_transcript_lo
 
 from app import app
 
-# CSS styles for different components in the layout
+# CSS styles for tabs components in the layout
 tabs_styles = {'display': 'flex',
                'flex-direction': 'row',
                'margin-left': '10%',
