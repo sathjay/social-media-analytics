@@ -447,7 +447,7 @@ def app_layout(n_click, youtube_url):
 
         fig1 = plot_Ratio(all_video_info_DF, Channel_Name)
         
-
+        # Remove the stop words from the comment to generate the WordCloud
         all_comments_DF['comments_no_stopwords'] = all_comments_DF['comments'].apply(
             lambda x: [item for item in str(x).split() if item not in stopwords])
 
