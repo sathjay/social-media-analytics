@@ -10,7 +10,7 @@ from Tab_Content.g_top_trends_in_given_year import g_top_trends_in_given_year_lo
 from Tab_Content.g_interest_by_region import g_interest_by_region_lo
 from Tab_Content.g_interest_over_time import g_interest_over_time_lo
 
-
+# CSS styles for tabs components in the layout
 tabs_styles = {'display': 'flex',
                'flex-direction': 'row',
                'margin-left': '10%',
