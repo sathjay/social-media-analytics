@@ -38,6 +38,10 @@ def calPolarity(text):
 
 
 def clean_text(txt):
+    '''
+    This is used to remove all the special characters/spaces/tabs and emoji's.
+    
+    '''
     txt = re.sub(r"RT[\s]+", "", txt)
     txt = txt.replace("\n", " ")
     txt = re.sub(" +", " ", txt)
