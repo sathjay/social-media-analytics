@@ -10,6 +10,7 @@ from Tab_Content.youtube_transcript import youtube_transcript_lo
 
 from app import app
 
+# CSS styles for different components in the layout
 tabs_styles = {'display': 'flex',
                'flex-direction': 'row',
                'margin-left': '10%',
@@ -34,6 +35,7 @@ selected_tab_style = {'color': 'blue',
                       'border-right': '1px solid white',
                       'border-bottom': '3px solid red'}
 
+# Main layout of the Dash app which contains tabs and descriptions
 youtube_LO = html.Div([
 
     html.H4(["Click on a tab: "], className=''),
@@ -63,8 +65,6 @@ youtube_LO = html.Div([
                          style=tab_style,
                          selected_style=selected_tab_style),
 
-
-
                  ], style=tabs_styles,
                  className='layout_tab_bar', colors={'border': None,
                                                      'primary': None,
@@ -72,16 +72,24 @@ youtube_LO = html.Div([
 
     ], className='select_container'),
 
-
-    html.Div(id='youtube_tab_content', className='analysis_content')
-
+    html.Div(id='youtube_tab_content', className='analysis_content') # Based on the tab selected this section will populate.
 
 ], className='LO_container')
 
-
 @app.callback(Output('youtube_tab_content', 'children'),
               [Input('youtube_tabs', 'value')])
+
 def update_youtube_tab_content(youtube_tabs):
+    """
+    Callback to update the content of the tab when a tab is selected.
+
+    Parameters:
+    - youtube_tabs (str): The 'value' of the selected tab.
+
+    Returns:
+    - The layout for the selected tab.
+    """
+  
     if youtube_tabs == 'channel':
         return youtube_channel_layout
     if youtube_tabs == 'comments':
