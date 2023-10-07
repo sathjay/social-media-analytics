@@ -9,6 +9,7 @@ from Tab_Content.reddit_textblob import reddit_text_blob_lo
 
 from app import app
 
+# CSS styles for tabs components in the layout
 tabs_styles = {'display': 'flex',
                'flex-direction': 'row',
                'margin-left': '10%',
@@ -32,7 +33,7 @@ selected_tab_style = {'color': 'blue',
                       'border-left': '1px solid white',
                       'border-right': '1px solid white',
                       'border-bottom': '3px solid red'}
-
+# Main layout of the Dash app which contains tabs and descriptions
 reddit_lo = html.Div([
 
     html.H4(["Click on a tab below: "], className='layout_title'),
@@ -71,6 +72,15 @@ reddit_lo = html.Div([
 @app.callback(Output('reddit_tab_content', 'children'),
               [Input('reddit_tabs', 'value')])
 def update_youtube_tab_content(reddit_tabs):
+  """
+    Update the content of the tab when a tab is selected.
+
+    Parameters:
+    - reddit_tabs (str): The 'value' of the selected tab.
+
+    Returns:
+    - (html.Div): The layout for the selected tab.
+    """
     if reddit_tabs == 'reddit_textblob':
         return reddit_text_blob_lo
     if reddit_tabs == 'reddit_chatgpt':
