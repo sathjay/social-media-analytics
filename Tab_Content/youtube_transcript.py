@@ -1,5 +1,5 @@
 from googleapiclient.discovery import build
-from youtube_transcript_api import YouTubeTranscriptApi
+from youtube_transcript_api import YouTubeTranscriptApi  # Free API used to extract transcript from the video.
 import pandas as pd
 import numpy as np
 import re
@@ -76,6 +76,9 @@ youtube_transcript_lo = html.Div([
     prevent_initial_call=True
 )
 def chatgpt_yt_content_analysis(n_clicks, video_url):
+    ''' From the user provided Youtube url, video id is extracted.
+    Using that video ID, full transcript is extracted, parsed and send to ChatGPT to check for PG/Adult rating, list of key words
+    Summary of Transcript and Sentiment.'''
 
     pattern = 'v='
     message = ''
@@ -116,7 +119,7 @@ def chatgpt_yt_content_analysis(n_clicks, video_url):
 
     ])
 
-    transcript = YouTubeTranscriptApi.get_transcript(video_id)
+    transcript = YouTubeTranscriptApi.get_transcript(video_id)  
 
     print(transcript[0]['text'])
 
