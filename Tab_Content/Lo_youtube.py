@@ -81,11 +81,9 @@ youtube_LO = html.Div([
 
 def update_youtube_tab_content(youtube_tabs):
     """
-    Callback to update the content of the tab when a tab is selected.
-
+    Callback to update the content of the tab when a tab is selected
     Parameters:
     - youtube_tabs (str): The 'value' of the selected tab.
-
     Returns:
     - The layout for the selected tab.
     """
