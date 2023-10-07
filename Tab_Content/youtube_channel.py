@@ -8,30 +8,26 @@ import plotly
 import plotly.express as px
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
-
-
+# Dash Packages and Library 
 import dash
 from dash import dash_table
 from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output, State
 from app import app
-# Added to make numbers readable.
-from numerize import numerize
-# Added to reformat the timestamps
-from dateutil import parser
+
+from numerize import numerize # Added to make numbers readable.
+from dateutil import parser # Added to reformat the timestamps
 from Tab_Content.zEnv_variables import stopwords
 from Tab_Content.zEnv_variables import Youtube_API_Key
 from wordcloud import WordCloud
 
-
+# API setup and configuration
 api_key = Youtube_API_Key
 youtube = build('youtube', 'v3', developerKey=api_key)
 stopwords = stopwords
 search_result_DF = pd.DataFrame()
 all_comments_DF = pd.DataFrame()
-
-# Getting Search results from YouTube API function
 
 
 def plot_View_Duration(fig, df, row, column=1):
@@ -146,6 +142,8 @@ def plot_Ratio(df, Channel_Name):
 
 
 def blank_fig():
+    '''This is added for aesthetic purpose. When the page loads, the div which contains the graph object blends with the background'''
+    
     fig = go.Figure(go.Scatter(x=[], y=[]))
     fig.update_layout(template=None, plot_bgcolor='rgba(245, 245, 245, 0.93)',
                       paper_bgcolor='rgba(245, 245, 245, 0.93)')
@@ -153,7 +151,6 @@ def blank_fig():
     fig.update_yaxes(showgrid=False, showticklabels=False, zeroline=False)
 
     return fig
-
 
 youtube_channel_layout = html.Div([
 
@@ -207,7 +204,6 @@ youtube_channel_layout = html.Div([
 
 ])
 
-
 @app.callback(
     [Output('message', 'children'),
      Output('viewership_plot', 'figure'),
@@ -222,6 +218,15 @@ youtube_channel_layout = html.Div([
     prevent_initial_call=True
 )
 def app_layout(n_click, youtube_url):
+   '''
+   This Call back function performs following task:
+   
+   From the provided Youtube url, the video ID is extracted. 
+   
+   
+   '''
+
+    
 
     link = youtube_url
     print(link)
@@ -229,7 +234,7 @@ def app_layout(n_click, youtube_url):
     pattern = 'v='
     message = ''
     match = re.search(pattern, link)
-
+    # Checking whether the entered Youtube url has a video ID.
     if match == None:
         message = "Please check the YouTube Video url. It should be like 'https://www.youtube.com/watch?v=RywP7cCYUWE'  or like 'https://www.youtube.com/watch?v=FkKPsLxgpuY&t=648s' this. "
 
@@ -247,6 +252,7 @@ def app_layout(n_click, youtube_url):
         print(video_id)
 
         # Getting Youtube Video Data (Channel ID)
+        
         request = youtube.videos().list(
             part="snippet,statistics",
             id=video_id)
@@ -264,7 +270,7 @@ def app_layout(n_click, youtube_url):
 
         response = request.execute()
 
-        # loop through items
+        # loop through response['items']. Extract relavent data for each item in dictionary and store the dictionary in List. 
         for item in response['items']:
             data = {'channelName': item['snippet']['title'],
                     'subscribers': item['statistics']['subscriberCount'],
@@ -282,7 +288,7 @@ def app_layout(n_click, youtube_url):
         totalVideos = channel_data[0]['totalVideos']
         playlistId = channel_data[0]['playlistId']
 
-        # Getting the number format
+        # Getting the number in easy to read format Like 50 Million instead of 500000000
         subscribers1 = "{:,}".format(int(subscribers))
         views1 = "{:,}".format(int(views))
         totalVideos1 = "{:,}".format(int(totalVideos))
@@ -307,7 +313,7 @@ def app_layout(n_click, youtube_url):
         for i in range(len(response['items'])):
             video_ids.append(response['items'][i]['contentDetails']['videoId'])
 
-        # Getting Video Info like number of views etc
+        # Getting Video Info like, number of views, etc.
 
         all_video_info = []
 
@@ -317,16 +323,16 @@ def app_layout(n_click, youtube_url):
         )
         response = request.execute()
 
-        for video in response['items']:
+        for video in response['items']:   #video is a nested dictionary/list object provided by Youtube.
             stats_to_keep = {'snippet': ['channelTitle', 'title', 'publishedAt'],
                              'statistics': ['viewCount', 'likeCount', 'commentCount'],
                              'contentDetails': ['duration']
                              }
-            video_info = {}
+            video_info = {}  # For storing extracted data in dictionary.
             video_info['video_id'] = video['id']
 
-            for k in stats_to_keep.keys():
-                for v in stats_to_keep[k]:
+            for k in stats_to_keep.keys():  # This will generate a list ['snippet','statistics','contentDetails']
+                for v in stats_to_keep[k]:  
                     try:
                         video_info[v] = video[k][v]
                     except:
@@ -334,7 +340,7 @@ def app_layout(n_click, youtube_url):
 
             all_video_info.append(video_info)
 
-        all_video_info_DF = pd.DataFrame(all_video_info)
+        all_video_info_DF = pd.DataFrame(all_video_info)  # Convert list of dictionary to Dataframe
 
         # Reformating the published time:
         all_video_info_DF['publishedAt'] = all_video_info_DF['publishedAt'].apply(
@@ -378,7 +384,7 @@ def app_layout(n_click, youtube_url):
             lambda x: ((x-51)*-1))
         print(all_video_info_DF)
 
-        # Getting top 10 comments for each video uploaded
+        # Getting top 5 comments for each video uploaded
 
         all_comments = []
         for video_id in video_ids:
@@ -440,6 +446,7 @@ def app_layout(n_click, youtube_url):
         )
 
         fig1 = plot_Ratio(all_video_info_DF, Channel_Name)
+        
 
         all_comments_DF['comments_no_stopwords'] = all_comments_DF['comments'].apply(
             lambda x: [item for item in str(x).split() if item not in stopwords])
