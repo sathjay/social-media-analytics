@@ -18,8 +18,6 @@ from Tab_Content.about_me import about_me_LO
 
 meta_tags = [{'name': 'viewport', 'content': 'width=device-width'}]
 external_stylesheets = [meta_tags]
-
-
 today = datetime.date.today()
 year = today.year
 copyright_message = f"© {year} -Sathya Jayagopi. All Rights Reserved."
@@ -49,17 +47,13 @@ selected_tab_style = {'color': 'blue',
                       'border-right': '1px solid white',
                       'border-bottom': '3px solid red'}
 
-
 app.layout = html.Div([
-
     html.Div([
-
         html.Div([
             html.Img(src=app.get_asset_url('Icon.png'), className='icon'),
             html.H1(['Social-Media Analytics with ChatGPT and NLP'],
                     className='title'),
         ], className='titleContainer'),
-
         html.Div([
             dcc.Tabs(id='main_tabs', value='home',
                  children=[
@@ -69,12 +63,10 @@ app.layout = html.Div([
                          style=tab_style,
                          selected_style=selected_tab_style,
                      ),
-
                      dcc.Tab(label='Youtube',
                              value='Youtube',
                              style=tab_style,
                              selected_style=selected_tab_style),
-
                      dcc.Tab(label='Reddit',
                              value='Reddit',
                              style=tab_style,
@@ -91,31 +83,20 @@ app.layout = html.Div([
                              style=tab_style,
                              selected_style=selected_tab_style),
 
-
                  ], style=tabs_styles,
                 className='tab_bar', colors={'border': None,
                                              'primary': None,
                                              })
-
         ], className='tabCcontainer'),
-
     ], className='header'),
-
-
+  
     html.Div(id='return_tab_content'),
-
     html.Footer([
-
         html.Div([html.P(copyright_message),
-
                   ], className='footerContent')
-
     ], className='footerContainer')
 
-
-
 ], className='mainContainer')
-
 
 @app.callback(Output('return_tab_content', 'children'),
               [Input('main_tabs', 'value')])
@@ -131,7 +112,6 @@ def update_content(main_tabs):
     if main_tabs == 'about_me':
         return about_me_LO
 
-
 if __name__ == '__main__':
-    app.run_server(debug=False, host="0.0.0.0", port=8080)
-    # app.run_server(debug=True)
+    #app.run_server(debug=False, host="0.0.0.0", port=8080)  # To be used only when deploying to cloud.
+    app.run_server(debug=True)
