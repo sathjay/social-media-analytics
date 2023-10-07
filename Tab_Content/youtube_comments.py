@@ -21,11 +21,9 @@ api_key = Youtube_API_Key
 youtube = build('youtube', 'v3', developerKey=api_key)
 openai.api_key = Open_AI_API_Key
 
-
 def comment_clense(comment):
     comment = ' '.join(comment.split())
     return comment
-
 
 youtube_comments_lo = html.Div([
 
@@ -87,7 +85,6 @@ youtube_comments_lo = html.Div([
                 'textAlign': 'left',
                 'textOverflow': 'ellipsis',
                 'padding-left': '8px',
-
             },
             {
                 'if': {'column_id': 'Comment Like Count'},
@@ -95,17 +92,13 @@ youtube_comments_lo = html.Div([
                 'textAlign': 'center'
             }
         ]
-
     ),
     html.Div(id='comment_section'),
     html.Br(),
     html.Div(id="ChatGPT_response"),
     dcc.Store(id='store-comments-df'),  # Added store for DataFrame
     dcc.Store(id='store-video-title'),  # Added store for video title
-
 ])
-
-
 @app.callback(
     [Output('video_search_message', 'children'),
      Output('video_search_result', component_property='data'),
@@ -152,15 +145,11 @@ def chatgpt_layout1(n_click, search_term):
             v_response = v_request.execute()
             video_title = v_response['items'][0]['snippet']['title']
 
-            video_view_count = int(
-                v_response['items'][0]['statistics']['viewCount'])
-            video_like_count = int(
-                v_response['items'][0]['statistics']['likeCount'])
-            video_comment_count = int(
-                v_response['items'][0]['statistics']['commentCount'])
+            video_view_count = int(v_response['items'][0]['statistics']['viewCount'])
+            video_like_count = int(v_response['items'][0]['statistics']['likeCount'])
+            video_comment_count = int(v_response['items'][0]['statistics']['commentCount'])
 
-            print(video_title, '\n', video_view_count, '\n',
-                  video_like_count, '\n', video_comment_count)
+            print(video_title, '\n', video_view_count, '\n',video_like_count, '\n', video_comment_count)
 
             message = f'The entered Youtube video url is "{link}". \nThe title of the video is "{video_title}". \nThis video has generated {numerize.numerize(video_view_count)} views with {numerize.numerize(video_like_count)} likes and {numerize.numerize(video_comment_count)} comments. \n\nBelow are the 20 top level comments: (Click on a row and scroll below to see the ChatGPTs response.)'
 
@@ -193,8 +182,7 @@ def chatgpt_layout1(n_click, search_term):
             all_comments_DF['Full Comment'] = all_comments_DF['Full Comment'].apply(
                 comment_clense)
 
-            comment_Display_DF = all_comments_DF[[
-                'Comment No:', 'Author', 'Comment', 'Comment Like Count']]
+            comment_Display_DF = all_comments_DF[['Comment No:', 'Author', 'Comment', 'Comment Like Count']]
             comment_Display_DF = comment_Display_DF.reset_index().rename(columns={
                 "index": "id"})
 
@@ -202,8 +190,7 @@ def chatgpt_layout1(n_click, search_term):
 
             video_search_result_column = [{'name': col, 'id': col}
                                           for col in comment_Display_DF.columns if col != 'id']
-            video_search_result_data = comment_Display_DF.to_dict(
-                orient='records')
+            video_search_result_data = comment_Display_DF.to_dict(orient='records')
 
             store_comments_df_data = all_comments_DF.to_json(
                 date_format='iso', orient='split')
