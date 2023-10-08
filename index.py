@@ -113,5 +113,5 @@ def update_content(main_tabs):
         return about_me_LO
 
 if __name__ == '__main__':
-    #app.run_server(debug=False, host="0.0.0.0", port=8080)  # To be used only when deploying to cloud.
+   
     app.run_server(debug=True)
